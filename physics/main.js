@@ -3,7 +3,6 @@ var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 
 //variables
-var level = 0; //game level
 var height = 0; //rocket height
 
 var grassHeight = 100; //height of grass for game start cutscene
@@ -14,6 +13,8 @@ var moveup = false;
 var movedown = false;
 
 var updateInterval = null; //setInterval variable for update(); will be set when the game has begun
+
+var enemies = []; //array of enemies
 
 //dev variables (all at false by default)
 var skipCutscene = false;
@@ -44,13 +45,18 @@ var rocket = {
 };
 
 //load in pictures
+//rocket
 rocket.picture1 = new Image();
 rocket.picture1.src = "./assets/rocket1.png";
-
 rocket.picture2 = new Image();
 rocket.picture2.src = "./assets/rocket2.png";
-
 rocket.currentPicture = rocket.picture1;
+//danger
+var danger = new Image();
+danger.src = "./assets/danger.png";
+//bird
+var bird = new Image();
+bird.src = "./assets/bird.png";
 
 //set canvas background colour
 var canvasColour = "#d1f3ff";
@@ -64,10 +70,11 @@ rocket.picture2.onload = function() {
 	if(!skipCutscene) {
 		setTimeout(grassDown, 1000);
 	}
-	else {
+	else { //skip the cutscene (speeds things up when testing)
 		grassHeight = 0;
 		rocket.y = 300;
 		height = 300;
+		rocket.currentPicture = rocket.picture2;
 		render();
 		instructions();
 	}
@@ -156,11 +163,17 @@ function update() {
 	//move player
 	move();
 	
+	//move all enemies
+	enemyMove();
+	
 	//display images and text
 	render();
 	
 	//check the player hasn't lost
 	checkLoss();
+	
+	//spawn in new enemies
+	spawnEnemies();
 }
 
 //render images and text on canvas
@@ -179,11 +192,87 @@ function render() {
 	//rocket
 	ctx.drawImage(rocket.currentPicture, 0, 0, rocket.imageSize.x, rocket.imageSize.y, rocket.x - rocket.imageSize.x / 2, rocket.y - rocket.imageSize.y / 2, rocket.imageSize.x * rocket.sizeMultiplier, rocket.imageSize.y * rocket.sizeMultiplier);
 
+	//enemies
+	for(var i = 0; i < enemies.length; i++) {
+		ctx.drawImage(enemies[i].picture, 0, 0, enemies[i].imageSize.x, enemies[i].imageSize.y, enemies[i].x - enemies[i].imageSize.x / 2, enemies[i].y - enemies[i].imageSize.y / 2, enemies[i].imageSize.x * enemies[i].sizeMultiplier, enemies[i].imageSize.y * enemies[i].sizeMultiplier);
+	}
+	
 	//score text
 	if(height > 300) { //only display once tutorial has finished
 	ctx.fillStyle = "black";
 	ctx.font = "18px Arial";
 	ctx.fillText("Height: " + height, 10, 20);
+	}
+}
+
+//enemy constructor
+//parameters passed in as an object
+//parameters: speed, direction, startX, startY, picture, imageSize.x, imageSize.y, sizeMultiplier
+function enemy(parameters) {
+	this.speed = parameters.speed;
+	this.direction = parameters.direction; //0 = north
+	//don't forget to convert to radians via the toRadians() function for direction!
+	
+	this.x = parameters.startX;
+	this.y = parameters.startY;
+	
+	this.picture = parameters.picture;
+	this.imageSize = parameters.imageSize;
+	this.sizeMultiplier = parameters.sizeMultiplier;
+}
+
+//spawn in new enemies
+function spawnEnemies() {
+	//if the rocket is low enough, spawn a bird every 50 ticks
+	if(height < 2500 && height % 50 == 30) {
+		var random = randomNum(canvas.height);
+		var enemyCreate = new enemy({
+			speed: 2,
+			direction: toRadians(110),
+			
+			startX: 0,
+			startY: random,
+			
+			picture: bird,
+			imageSize: {
+				x: 116,
+				y: 87,
+			},
+			sizeMultiplier: 0.5,
+		});
+		enemies.push(enemyCreate);
+	}
+}
+
+//generate random number between 0 and upper limit
+//TODO: make a lower limit as well
+function randomNum(upper) {
+	var foo = Math.random();
+	foo *= upper;
+	var bar = Math.floor(foo);
+	return bar;
+}
+
+//convert degrees to radians
+//javascript processes sin and cos in radians, not degrees, but degrees is more readable
+function toRadians(degrees) {
+	var foo = degrees / 180;
+	//foo *= Math.PI;
+	return foo;
+}
+
+//move all enemies
+function enemyMove() {
+	for(var i = 0; i < enemies.length; i++) {
+		//move the enemy
+		enemies[i].x += enemies[i].speed * Math.cos(enemies[i].direction);
+		enemies[i].y += enemies[i].speed * Math.sin(enemies[i].direction);
+		
+		//remove the enemy if they are off the screen
+		if(enemies[i].x > canvas.length + 100 || enemies[i].x < -100 || enemies[i].y > canvas.height + 100 || enemies[i].y < -100) {
+			enemies.splice(i, 1);
+			i--;
+		}		
 	}
 }
 
