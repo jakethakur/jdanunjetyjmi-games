@@ -18,6 +18,7 @@ var enemies = []; //array of enemies
 
 //dev variables (all at false by default)
 var skipCutscene = false;
+var hitboxes = false;
 
 //stop image smoothing (makes images look low quality)
 ctx.mozImageSmoothingEnabled = false;
@@ -191,10 +192,20 @@ function render() {
 	
 	//rocket
 	ctx.drawImage(rocket.currentPicture, 0, 0, rocket.imageSize.x, rocket.imageSize.y, rocket.x - rocket.imageSize.x / 2, rocket.y - rocket.imageSize.y / 2, rocket.imageSize.x * rocket.sizeMultiplier, rocket.imageSize.y * rocket.sizeMultiplier);
-
+	//hitboxes
+	if(hitboxes) {
+		ctx.strokeStyle = "red";
+		ctx.strokeRect(rocket.x - rocket.imageSize.x * rocket.sizeMultiplier, rocket.y - rocket.imageSize.y * rocket.sizeMultiplier, rocket.imageSize.x * rocket.sizeMultiplier, rocket.imageSize.y * rocket.sizeMultiplier);
+	}
+	
 	//enemies
 	for(var i = 0; i < enemies.length; i++) {
 		ctx.drawImage(enemies[i].picture, 0, 0, enemies[i].imageSize.x, enemies[i].imageSize.y, enemies[i].x - enemies[i].imageSize.x / 2, enemies[i].y - enemies[i].imageSize.y / 2, enemies[i].imageSize.x * enemies[i].sizeMultiplier, enemies[i].imageSize.y * enemies[i].sizeMultiplier);
+		//hitboxes
+		if(hitboxes) {
+			ctx.strokeStyle = "red";
+			ctx.strokeRect(enemies[i].x - enemies[i].imageSize.x * enemies[i].sizeMultiplier, enemies[i].y - enemies[i].imageSize.y * enemies[i].sizeMultiplier, enemies[i].imageSize.x * enemies[i].sizeMultiplier, enemies[i].imageSize.y * enemies[i].sizeMultiplier);
+		}
 	}
 	
 	//score text
@@ -290,6 +301,35 @@ function checkLoss() {
 	}
 	else if(rocket.y >= canvas.height) { //bottom side
 		loseGame();
+	}
+	
+	//touching enemy
+	for(var i = 0; i < enemies.length; i++) {
+		if(isTouching(rocket, enemies[i])){
+			loseGame();
+		}
+	}
+}
+
+//check if two objects are touching
+function isTouching(obj1, obj2) {
+	//https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection is useful
+	
+	/*if(obj1.x + obj1.imageSize.x * obj1.sizeMultiplier > obj2.x && obj1.x < obj2.x + obj2.imageSize.x * obj2.sizeMultiplier && obj1.y + obj1.imageSize.y * obj1.sizeMultiplier > obj2.y && obj1.y < obj2.y + obj2.imageSize.y * obj2.sizeMultiplier) {
+		return true;
+	}
+	else {
+		return false;
+	}*/
+	
+	if(obj1.x - obj1.imageSize.x * obj1.sizeMultiplier < obj2.x &&
+	   obj1.x > obj2.x - obj2.imageSize.x * obj2.sizeMultiplier &&
+	   obj1.y - obj1.imageSize.y * obj1.sizeMultiplier < obj2.y &&
+	   obj1.y > obj2.y - obj2.imageSize.y * obj2.sizeMultiplier) {
+		return true;
+	}
+	else {
+		return false;
 	}
 }
 
