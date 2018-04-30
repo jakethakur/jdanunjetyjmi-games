@@ -143,6 +143,11 @@ document.onkeyup = function(e) {
 	if(e.keyCode == 40) movedown = false;
 }
 
+//mobile touch player input
+function touchUp(event) {
+	rocket.y -= rocket.moveSpeed;
+}
+
 //move rocket towards any active keypress
 function move() {
 	if (moveleft) {
