@@ -3,7 +3,7 @@ var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 
 //variables
-var height = 0; //rocket height
+var height = 0; //rocket height (0 by default)
 
 var grassHeight = 100; //height of grass for game start cutscene
 
@@ -18,9 +18,10 @@ var updateInterval = null; //setInterval variable for update(); will be set when
 
 var enemies = []; //array of enemies
 
-//dev variables (all at false by default)
-var skipCutscene = false;
-var hitboxes = false;
+//dev variables
+var skipCutscene = false; //false default
+var hitboxes = false; //false default
+var startAt = 300; //300 default - only works if skipCutscene is true
 
 //stop image smoothing (makes images look low quality)
 ctx.mozImageSmoothingEnabled = false;
@@ -39,11 +40,9 @@ var rocket = {
 	moveSpeed: 2.5, //how many pixels to move per game update
 	//moveSpeed is normally 2.5
 	
-	sizeMultiplier: 0.5,
-	
 	imageSize: {
-		x: 106,
-		y: 182,
+		x: 53,
+		y: 91,
 	}
 };
 
@@ -54,12 +53,20 @@ rocket.picture1.src = "./assets/rocket1.png";
 rocket.picture2 = new Image();
 rocket.picture2.src = "./assets/rocket2.png";
 rocket.currentPicture = rocket.picture1;
-//danger
+//danger (currently unused)
 var danger = new Image();
 danger.src = "./assets/danger.png";
 //bird
 var bird = new Image();
 bird.src = "./assets/bird.png";
+//meteor
+var meteorLarge = new Image();
+meteorLarge.src = "./assets/meteorLarge.png";
+var meteorMedium = new Image();
+meteorMedium.src = "./assets/meteorMedium.png";
+var meteorSmall = new Image();
+meteorSmall.src = "./assets/meteorSmall.png";
+
 
 //set canvas background colour
 var canvasColour = "#d1f3ff";
@@ -76,7 +83,7 @@ rocket.picture2.onload = function() {
 	else { //skip the cutscene (speeds things up when testing)
 		grassHeight = 0;
 		rocket.y = 300;
-		height = 300;
+		height = startAt;
 		rocket.currentPicture = rocket.picture2;
 		render();
 		instructions();
@@ -159,8 +166,8 @@ function move() {
 	}
 	
 	//move rocket towards direction of gravity
-	console.log("radians: " + toRadians(directionOfGravity));
-	console.log("y: " + Math.sin(toRadians(directionOfGravity)));
+	//console.log("radians: " + toRadians(directionOfGravity));
+	//console.log("y: " + Math.sin(toRadians(directionOfGravity)));
 	rocket.y += Math.sin(toRadians(directionOfGravity));
 	rocket.x += Math.cos(toRadians(directionOfGravity));
 }
@@ -200,20 +207,20 @@ function render() {
 	ctx.fillRect(0, 600 - grassHeight, canvas.width, 600);
 	
 	//rocket
-	ctx.drawImage(rocket.currentPicture, 0, 0, rocket.imageSize.x, rocket.imageSize.y, rocket.x - rocket.imageSize.x / 2, rocket.y - rocket.imageSize.y / 2, rocket.imageSize.x * rocket.sizeMultiplier, rocket.imageSize.y * rocket.sizeMultiplier);
+	ctx.drawImage(rocket.currentPicture, 0, 0, rocket.imageSize.x, rocket.imageSize.y, rocket.x - rocket.imageSize.x / 2, rocket.y - rocket.imageSize.y / 2, rocket.imageSize.x, rocket.imageSize.y);
 	//hitboxes
 	if(hitboxes) {
 		ctx.strokeStyle = "red";
-		ctx.strokeRect(rocket.x - rocket.imageSize.x * rocket.sizeMultiplier, rocket.y - rocket.imageSize.y * rocket.sizeMultiplier, rocket.imageSize.x * rocket.sizeMultiplier, rocket.imageSize.y * rocket.sizeMultiplier);
+		ctx.strokeRect(rocket.x - rocket.imageSize.x / 2, rocket.y - rocket.imageSize.y / 2, rocket.imageSize.x, rocket.imageSize.y);
 	}
 	
 	//enemies
 	for(var i = 0; i < enemies.length; i++) {
-		ctx.drawImage(enemies[i].picture, 0, 0, enemies[i].imageSize.x, enemies[i].imageSize.y, enemies[i].x - enemies[i].imageSize.x / 2, enemies[i].y - enemies[i].imageSize.y / 2, enemies[i].imageSize.x * enemies[i].sizeMultiplier, enemies[i].imageSize.y * enemies[i].sizeMultiplier);
+		ctx.drawImage(enemies[i].picture, 0, 0, enemies[i].imageSize.x, enemies[i].imageSize.y, enemies[i].x - enemies[i].imageSize.x / 2, enemies[i].y - enemies[i].imageSize.y / 2, enemies[i].imageSize.x, enemies[i].imageSize.y);
 		//hitboxes
 		if(hitboxes) {
 			ctx.strokeStyle = "red";
-			ctx.strokeRect(enemies[i].x - enemies[i].imageSize.x * enemies[i].sizeMultiplier, enemies[i].y - enemies[i].imageSize.y * enemies[i].sizeMultiplier, enemies[i].imageSize.x * enemies[i].sizeMultiplier, enemies[i].imageSize.y * enemies[i].sizeMultiplier);
+			ctx.strokeRect(enemies[i].x - enemies[i].imageSize.x / 2, enemies[i].y - enemies[i].imageSize.y / 2, enemies[i].imageSize.x, enemies[i].imageSize.y);
 		}
 	}
 	
@@ -227,10 +234,10 @@ function render() {
 
 //enemy constructor
 //parameters passed in as an object
-//parameters: speed, direction, startX, startY, picture, imageSize.x, imageSize.y, sizeMultiplier
+//parameters: speed, direction, startX, startY, picture, imageSize.x, imageSize.y
 function enemy(parameters) {
 	this.speed = parameters.speed;
-	this.direction = parameters.direction; //0 = north
+	this.direction = parameters.direction; //0 = right
 	//don't forget to convert to radians via the toRadians() function for direction!
 	
 	this.x = parameters.startX;
@@ -238,7 +245,6 @@ function enemy(parameters) {
 	
 	this.picture = parameters.picture;
 	this.imageSize = parameters.imageSize;
-	this.sizeMultiplier = parameters.sizeMultiplier;
 }
 
 //spawn in new enemies
@@ -256,10 +262,9 @@ function spawnEnemies() {
 				
 				picture: bird,
 				imageSize: {
-					x: 116,
-					y: 87,
+					x: 58,
+					y: 44,
 				},
-				sizeMultiplier: 0.5,
 			});
 		}
 		else { //summon bird from left
@@ -273,13 +278,67 @@ function spawnEnemies() {
 				
 				picture: bird,
 				imageSize: {
-					x: 116,
-					y: 87,
+					x: 58,
+					y: 44,
 				},
-				sizeMultiplier: 0.5,
 			});
 		}
-		
+		enemies.push(enemyCreate);
+	}
+	
+	//otherwise spawn a meteor every 30 ticks
+	if (height > 2500 && height < 5000 && height % 30 == 10) {
+		if(randomNum(25) == 1) { //summon big meteor (rare)
+			var random = randomNum(canvas.width);
+			var enemyCreate = new enemy({
+				speed: 3,
+				direction: toRadians(90),
+				
+				startX: random,
+				startY: 0,
+				
+				picture: meteorLarge,
+				imageSize: {
+					x: 180,
+					y: 180,
+				},
+				//sizeMultiplier: 1.5,
+			});
+		}
+		else if(randomNum(3) == 1) { //summon medium meteor
+			var random = randomNum(canvas.height);
+			var enemyCreate = new enemy({
+				speed: 3,
+				direction: toRadians(90),
+				
+				startX: random,
+				startY: 0,
+				
+				picture: meteorMedium,
+				imageSize: {
+					x: 90,
+					y: 90,
+				},
+				//sizeMultiplier: 0.75,
+			});
+		}
+		else { //summon small meteor
+			var random = randomNum(canvas.height);
+			var enemyCreate = new enemy({
+				speed: 3,
+				direction: toRadians(90),
+				
+				startX: random,
+				startY: 0,
+				
+				picture: meteorSmall,
+				imageSize: {
+					x: 30,
+					y: 30,
+				},
+				//sizeMultiplier: 0.25,
+			});
+		}
 		enemies.push(enemyCreate);
 	}
 }
@@ -322,26 +381,38 @@ function checkLoss() {
 	if(rocket.x <= 0 + rocket.imageSize.x / 2) { //left side
 		loseGame();
 	}
-	else if(rocket.x >= canvas.width) { //right side
+	else if(rocket.x >= canvas.width - rocket.imageSize.x / 2) { //right side
 		loseGame();
 	}
 	else if(rocket.y <= 0 + rocket.imageSize.y / 2) { //top side
 		loseGame();
 	}
-	else if(rocket.y >= canvas.height) { //bottom side
+	else if(rocket.y >= canvas.height - rocket.imageSize.y / 2) { //bottom side
 		loseGame();
 	}
 	
 	//touching enemy
 	for(var i = 0; i < enemies.length; i++) {
-		if(isTouching(rocket, enemies[i])){
+		var rocketCollision = {
+			x: rocket.x - rocket.imageSize.x / 2,
+			y: rocket.y - rocket.imageSize.y / 2,
+			width: rocket.imageSize.x,
+			height: rocket.imageSize.y,
+		}
+		var enemyCollision = {
+			x: enemies[i].x - enemies[i].imageSize.x / 2,
+			y: enemies[i].y - enemies[i].imageSize.y / 2,
+			width: enemies[i].imageSize.x,
+			height: enemies[i].imageSize.y,
+		}
+		if(isTouching(rocketCollision, enemyCollision)) {
 			loseGame();
 		}
 	}
 }
 
 //check if two objects are touching
-function isTouching(obj1, obj2) {
+function isTouching(rect1, rect2) {
 	//https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection is useful
 	
 	/*if(obj1.x + obj1.imageSize.x * obj1.sizeMultiplier > obj2.x && obj1.x < obj2.x + obj2.imageSize.x * obj2.sizeMultiplier && obj1.y + obj1.imageSize.y * obj1.sizeMultiplier > obj2.y && obj1.y < obj2.y + obj2.imageSize.y * obj2.sizeMultiplier) {
@@ -351,10 +422,7 @@ function isTouching(obj1, obj2) {
 		return false;
 	}*/
 	
-	if(obj1.x - obj1.imageSize.x * obj1.sizeMultiplier < obj2.x &&
-	   obj1.x > obj2.x - obj2.imageSize.x * obj2.sizeMultiplier &&
-	   obj1.y - obj1.imageSize.y * obj1.sizeMultiplier < obj2.y &&
-	   obj1.y > obj2.y - obj2.imageSize.y * obj2.sizeMultiplier) {
+	if(rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.height + rect1.y > rect2.y) {
 		return true;
 	}
 	else {
