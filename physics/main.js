@@ -7,6 +7,8 @@ var height = 0; //rocket height
 
 var grassHeight = 100; //height of grass for game start cutscene
 
+var directionOfGravity = 90; //direction the rocket is pulled towards in degrees
+
 var moveleft = false;
 var moveright = false;
 var moveup = false;
@@ -17,8 +19,8 @@ var updateInterval = null; //setInterval variable for update(); will be set when
 var enemies = []; //array of enemies
 
 //dev variables (all at false by default)
-var skipCutscene = false;
-var hitboxes = false;
+var skipCutscene = true;
+var hitboxes = true;
 
 //stop image smoothing (makes images look low quality)
 ctx.mozImageSmoothingEnabled = false;
@@ -143,8 +145,9 @@ document.onkeyup = function(e) {
 	if(e.keyCode == 40) movedown = false;
 }
 
-//move rocket towards any active keypress
+//move rocket
 function move() {
+	//move rocket towards any active keypress
 	if (moveleft) {
 		rocket.x -= rocket.moveSpeed;
 	} else if (moveright) {
@@ -154,6 +157,12 @@ function move() {
 	} else if (movedown) {
 		rocket.y += rocket.moveSpeed;
 	}
+	
+	//move rocket towards direction of gravity
+	console.log("radians: " + toRadians(directionOfGravity));
+	console.log("y: " + Math.sin(toRadians(directionOfGravity)));
+	rocket.y += Math.sin(toRadians(directionOfGravity));
+	rocket.x += Math.cos(toRadians(directionOfGravity));
 }
 
 //update game state
@@ -234,28 +243,48 @@ function enemy(parameters) {
 
 //spawn in new enemies
 function spawnEnemies() {
-	//if the rocket is low enough, spawn a bird every 50 ticks
-	if(height < 2500 && height % 50 == 30) {
-		var random = randomNum(canvas.height);
-		var enemyCreate = new enemy({
-			speed: 2,
-			direction: toRadians(110),
-			
-			startX: 0,
-			startY: random,
-			
-			picture: bird,
-			imageSize: {
-				x: 116,
-				y: 87,
-			},
-			sizeMultiplier: 0.5,
-		});
+	//if the rocket is low enough, spawn a bird every 40 ticks
+	if(height < 2500 && height % 40 == 30) {
+		if(randomNum(2) == 1) { //summon bird from top
+			var random = randomNum(canvas.width);
+			var enemyCreate = new enemy({
+				speed: 2,
+				direction: toRadians(30),
+				
+				startX: random,
+				startY: 0,
+				
+				picture: bird,
+				imageSize: {
+					x: 116,
+					y: 87,
+				},
+				sizeMultiplier: 0.5,
+			});
+		}
+		else { //summon bird from left
+			var random = randomNum(canvas.height);
+			var enemyCreate = new enemy({
+				speed: 2,
+				direction: toRadians(30),
+				
+				startX: 0,
+				startY: random,
+				
+				picture: bird,
+				imageSize: {
+					x: 116,
+					y: 87,
+				},
+				sizeMultiplier: 0.5,
+			});
+		}
+		
 		enemies.push(enemyCreate);
 	}
 }
 
-//generate random number between 0 and upper limit
+//generate random number between 0 and upper limit (upper limit will never be reached)
 //TODO: make a lower limit as well
 function randomNum(upper) {
 	var foo = Math.random();
@@ -268,7 +297,7 @@ function randomNum(upper) {
 //javascript processes sin and cos in radians, not degrees, but degrees is more readable
 function toRadians(degrees) {
 	var foo = degrees / 180;
-	//foo *= Math.PI;
+	foo *= Math.PI;
 	return foo;
 }
 
