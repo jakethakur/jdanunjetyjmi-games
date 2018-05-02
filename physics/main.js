@@ -19,8 +19,8 @@ var updateInterval = null; //setInterval variable for update(); will be set when
 var enemies = []; //array of enemies
 
 //dev variables (all at false by default)
-var skipCutscene = true;
-var hitboxes = true;
+var skipCutscene = false;
+var hitboxes = false;
 
 //stop image smoothing (makes images look low quality)
 ctx.mozImageSmoothingEnabled = false;
