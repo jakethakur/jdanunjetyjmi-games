@@ -158,33 +158,35 @@ document.onkeyup = function(e) {
 window.addEventListener("deviceorientation", mobileTilt);
 //function
 function mobileTilt(event) {
-	var x = event.beta;
-	x = x / 2;
-	
-	var y = event.gamma;
-	
-	if(x > 0) {
-		moveright = true;
-		moveleft = false;
-	}
-	else if(x < 0) {
-		moveleft = true;
-		moveright = false;
-	}
-	
-	if(y > 0) {
-		moveup = true;
-		movedown = false;
-	}
-	else if(y < 0) {
-		movedowm = true;
-		moveup = false;
-	}
+	if(height >= 300) {
+		var x = event.beta;
+		x = x / 2;
 		
-	//if the game does not update yet, make it start and dismiss the tutorial text
-	if(updateInterval == null) {
-		//declare game update interval
-		updateInterval = setInterval(update, 1000 / rocket.speed);
+		var y = event.gamma;
+		
+		if(x > 0) {
+			moveright = true;
+			moveleft = false;
+		}
+		else if(x < 0) {
+			moveleft = true;
+			moveright = false;
+		}
+		
+		if(y > 0) {
+			moveup = true;
+			movedown = false;
+		}
+		else if(y < 0) {
+			movedown = true;
+			moveup = false;
+		}
+			
+		//if the game does not update yet, make it start and dismiss the tutorial text
+		if(updateInterval == null) {
+			//declare game update interval
+			updateInterval = setInterval(update, 1000 / rocket.speed);
+		}
 	}
 }
 
