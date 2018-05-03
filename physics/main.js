@@ -180,6 +180,12 @@ function mobileTilt(event) {
 		movedowm = true;
 		moveup = false;
 	}
+		
+	//if the game does not update yet, make it start and dismiss the tutorial text
+	if(updateInterval == null) {
+		//declare game update interval
+		updateInterval = setInterval(update, 1000 / rocket.speed);
+	}
 }
 
 //move rocket
