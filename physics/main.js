@@ -19,7 +19,7 @@ var updateInterval = null; //setInterval variable for update(); will be set when
 var enemies = []; //array of enemies
 
 //dev variables
-var skipCutscene = false; //false default
+var skipCutscene = true; //false default
 var hitboxes = false; //false default
 var startAt = 300; //300 default - only works if skipCutscene is true
 
@@ -162,7 +162,7 @@ function mobileTilt(event) {
 		var x = event.beta;
 		x = x / 2;
 		
-		var y = event.gamma;
+		var y = event.alpha;
 		
 		if(x > 0) {
 			moveright = true;
