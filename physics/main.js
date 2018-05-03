@@ -152,6 +152,36 @@ document.onkeyup = function(e) {
 	if(e.keyCode == 40) movedown = false;
 }
 
+
+//mobile device tilt
+//event listener
+window.addEventListener("deviceorientation", mobileTilt);
+//function
+function mobileTilt(event) {
+	var x = event.beta;
+	x = x / 2;
+	
+	var y = event.gamma;
+	
+	if(x > 0) {
+		moveright = true;
+		moveleft = false;
+	}
+	else if(x < 0) {
+		moveleft = true;
+		moveright = false;
+	}
+	
+	if(y > 0) {
+		moveup = true;
+		movedown = false;
+	}
+	else if(y < 0) {
+		movedowm = true;
+		moveup = false;
+	}
+}
+
 //move rocket
 function move() {
 	//move rocket towards any active keypress
