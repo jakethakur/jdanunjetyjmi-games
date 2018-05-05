@@ -168,11 +168,11 @@ function mobileTilt(event) {
 		ctx.fillText(x, 30, 70);
 		ctx.fillText(y, 30, 100);
 		
-		if(x > 20 && x != null) {
+		if(x > 10 && x != null) {
 			moveright = true;
 			moveleft = false;
 		}
-		else if(x < -20 && x != null) {
+		else if(x < -10 && x != null) {
 			moveleft = true;
 			moveright = false;
 		}
@@ -181,11 +181,11 @@ function mobileTilt(event) {
 			moveright = false;
 		}
 		
-		if(y > 20 && y != null) {
+		if(y > 10 && y != null) {
 			moveup = true;
 			movedown = false;
 		}
-		else if(y < -20 && y != null) {
+		else if(y < -10 && y != null) {
 			movedown = true;
 			moveup = false;
 		}
