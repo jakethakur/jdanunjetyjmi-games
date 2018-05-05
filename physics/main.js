@@ -164,9 +164,6 @@ function mobileTilt(event) {
 		
 		var y = event.gamma;
 		
-		ctx.fillText(y < 0, 10, 40);
-		ctx.fillText(movedown, 10, 60);
-		
 		if(x > 0) {
 			moveright = true;
 			moveleft = false;
@@ -198,11 +195,11 @@ function move() {
 	//move rocket towards any active keypress
 	if (moveleft) {
 		rocket.x -= rocket.moveSpeed;
-	} else if (moveright) {
+	if (moveright) {
 		rocket.x += rocket.moveSpeed;
-	} else if (moveup) {
+	if (moveup) {
 		rocket.y -= rocket.moveSpeed;
-	} else if (movedown) {
+	if (movedown) {
 		rocket.y += rocket.moveSpeed;
 	}
 	
