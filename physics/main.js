@@ -162,7 +162,9 @@ function mobileTilt(event) {
 		var x = event.beta;
 		x = x / 2;
 		
-		var y = event.alpha;
+		var y = event.gamma;
+		
+		ctx.fillText("x: " + x + " y: " + y, 10, 40);
 		
 		if(x > 0) {
 			moveright = true;
