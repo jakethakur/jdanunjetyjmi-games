@@ -164,6 +164,9 @@ function mobileTilt(event) {
 		
 		var y = event.gamma;
 		
+		text(x, 30, 30);
+		text(y, 30, 50);
+		
 		if(x > 10) {
 			moveright = true;
 			moveleft = false;
