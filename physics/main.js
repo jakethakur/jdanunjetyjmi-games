@@ -160,24 +160,24 @@ window.addEventListener("deviceorientation", mobileTilt);
 function mobileTilt(event) {
 	if(height >= 300) {
 		var x = event.beta;
-		x = x / 2;
+		//x = x / 2;
 		
 		var y = event.gamma;
 		
-		if(x > 0) {
+		if(x > 30) {
 			moveright = true;
 			moveleft = false;
 		}
-		else if(x < 0) {
+		else if(x < 30) {
 			moveleft = true;
 			moveright = false;
 		}
 		
-		if(y > 0) {
+		if(y > 30) {
 			moveup = true;
 			movedown = false;
 		}
-		else if(y < 0) {
+		else if(y < 30) {
 			movedown = true;
 			moveup = false;
 		}
