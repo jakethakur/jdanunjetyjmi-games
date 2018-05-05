@@ -164,14 +164,15 @@ function mobileTilt(event) {
 		
 		var y = event.gamma;
 		
-		ctx.fillText(x, 30, 30);
-		ctx.fillText(y, 30, 50);
+		ctx.fillStyle = "black";
+		ctx.fillText(x, 30, 70);
+		ctx.fillText(y, 30, 100);
 		
-		if(x > 10) {
+		if(x > 20 && x != null) {
 			moveright = true;
 			moveleft = false;
 		}
-		else if(x < 10) {
+		else if(x < -20 && x != null) {
 			moveleft = true;
 			moveright = false;
 		}
@@ -180,11 +181,11 @@ function mobileTilt(event) {
 			moveright = false;
 		}
 		
-		if(y > 10) {
+		if(y > 20 && y != null) {
 			moveup = true;
 			movedown = false;
 		}
-		else if(y < 10) {
+		else if(y < -20 && y != null) {
 			movedown = true;
 			moveup = false;
 		}
@@ -194,7 +195,7 @@ function mobileTilt(event) {
 		}
 			
 		//if the game does not update yet, make it start and dismiss the tutorial text
-		if(updateInterval == null) {
+		if(updateInterval == null && x != null) {
 			//declare game update interval
 			updateInterval = setInterval(update, 1000 / rocket.speed);
 		}
