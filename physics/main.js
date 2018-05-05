@@ -164,20 +164,20 @@ function mobileTilt(event) {
 		
 		var y = event.gamma;
 		
-		if(x > 30) {
+		if(x > 10) {
 			moveright = true;
 			moveleft = false;
 		}
-		else if(x < 30) {
+		else if(x < 10) {
 			moveleft = true;
 			moveright = false;
 		}
 		
-		if(y > 30) {
+		if(y > 10) {
 			moveup = true;
 			movedown = false;
 		}
-		else if(y < 30) {
+		else if(y < 10) {
 			movedown = true;
 			moveup = false;
 		}
