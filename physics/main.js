@@ -195,10 +195,13 @@ function move() {
 	//move rocket towards any active keypress
 	if (moveleft) {
 		rocket.x -= rocket.moveSpeed;
+	}
 	if (moveright) {
 		rocket.x += rocket.moveSpeed;
+	}
 	if (moveup) {
 		rocket.y -= rocket.moveSpeed;
+	}
 	if (movedown) {
 		rocket.y += rocket.moveSpeed;
 	}
