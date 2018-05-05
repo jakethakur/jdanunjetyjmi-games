@@ -165,7 +165,7 @@ function mobileTilt(event) {
 		var y = event.gamma;
 		
 		ctx.fillText(y < 0, 10, 40);
-		ctx.fillText(movedown, 10, 40);
+		ctx.fillText(movedown, 10, 60);
 		
 		if(x > 0) {
 			moveright = true;
