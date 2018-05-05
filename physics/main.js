@@ -172,6 +172,10 @@ function mobileTilt(event) {
 			moveleft = true;
 			moveright = false;
 		}
+		else {
+			moveleft = false;
+			moveright = false;
+		}
 		
 		if(y > 10) {
 			moveup = true;
@@ -179,6 +183,10 @@ function mobileTilt(event) {
 		}
 		else if(y < 10) {
 			movedown = true;
+			moveup = false;
+		}
+		else {
+			movedown = false;
 			moveup = false;
 		}
 			
