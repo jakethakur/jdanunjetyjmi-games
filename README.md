@@ -1,3 +1,3 @@
 # jdanunjetyjmi games
 
-[Physics](https://jakethakur22.github.io/jdanunjetyjmi-games/physics/game.html)
+[Physics](https://jakethakur.github.io/jdanunjetyjmi-games/physics/game.html)
