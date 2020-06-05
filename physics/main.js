@@ -19,7 +19,7 @@ var updateInterval = null; //setInterval variable for update(); will be set when
 var enemies = []; //array of enemies
 
 //dev variables
-var skipCutscene = true; //false default
+var skipCutscene = false; //false default
 var hitboxes = false //false default
 var startAt = 300; //300 default - only works if skipCutscene is true
 
