@@ -20,7 +20,7 @@ var enemies = []; //array of enemies
 
 //dev variables
 var skipCutscene = true; //false default
-var hitboxes = true; //false default
+var hitboxes = false //false default
 var startAt = 300; //300 default - only works if skipCutscene is true
 
 //stop image smoothing (makes images look low quality)
